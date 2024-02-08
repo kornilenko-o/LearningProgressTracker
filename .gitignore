@@ -1,0 +1,5 @@
+# Project exclude paths
+/.gradle/
+/Learning Progress Tracker (Java)/task/build/
+/Learning Progress Tracker (Java)/task/out/
+/Learning Progress Tracker (Java)/task/out/production/classes/
