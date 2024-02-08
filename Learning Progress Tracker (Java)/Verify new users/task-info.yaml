@@ -294,50 +294,15 @@ files:
           }
       }
     learner_created: false
-  - name: src/tracker/CommandLineMenu.java
+  - name: src/tracker/LearningProgressTracker.java
     visible: true
-    text: |
-      package tracker;
-      
-      import java.util.ArrayList;
-      import java.util.List;
-      import java.util.Optional;
-      import java.util.Scanner;
-      
-      public class CommandLineMenu {
-          static final List<String> options = new ArrayList<>();
-          private static final Scanner SCANNER = new Scanner(System.in);
-      
-          static {
-              options.add("Exit");
-          }
-      
-      //    static void showMenu(){
-      //        for (int i = 0; i <= options.size(); i++) {
-      //            System.out.println(options.get(i));
-      //        }
-      //    }
-      
-          static void processOption() {
-              while (true) {
-                  String option = SCANNER.nextLine().trim();
-                  if (option.isEmpty()) {
-                      System.out.println("No input.");
-                  } else {
-                      switch (option.toLowerCase()) {
-                          case "exit" -> {
-                              System.out.println("Bye!");
-                              return;
-                          }
-                          default -> System.out.println("Unknown command!");
-      
-                      }
-                  }
-              }
-          }
-      
-      }
+    learner_created: true
+  - name: src/tracker/Student.java
+    visible: true
     learner_created: true
 feedback_link: https://hyperskill.org/learn/step/14397#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Thu, 08 Feb 2024 18:23:13 UTC"
+record: 2
