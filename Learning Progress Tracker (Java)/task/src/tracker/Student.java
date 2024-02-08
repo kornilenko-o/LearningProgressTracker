@@ -1,98 +1,72 @@
 package tracker;
 
-import java.util.*;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Student {
-    private String firstName;
-    private String lastName;
-    private String email;
+    final int ID;
+    String name;
+    String surname;
+    String email;
+    boolean correctEntry = true;
 
-    public Student() {
-    }
+    public Student(String entry) {
+        String[] allWords = entry.split(" ");
+        this.ID = Math.abs(new Random().nextInt(1000, 2000));
+        if (allWords.length < 3) {
+            this.correctEntry = false;
+            System.out.println("Incorrect credentials.");
+            return;
+        }
+        StringBuilder surnameBuilder = new StringBuilder();
+        if (!verifyName(allWords[0])) {
+            this.correctEntry = false;
+            System.out.println("Incorrect first name.");
+            return;
+        }
+        this.name = allWords[0];
+        for (int i = 1; i < allWords.length-1; i++) {
 
-    private Student(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public static void addStudents(List<Student> studentList) {
-        int totalCounter = 0;
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter student credentials or 'back' to return:");
-        String input;
-        Student tempStudent = new Student();
-        Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z0-9]{1,}$"); //"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z0-9]{2,}"
-        Matcher email_matcher;
-
-
-        while (true) {
-            input = scanner.nextLine();
-            if (input.equalsIgnoreCase("back".trim())) {
-                System.out.println("Total " + totalCounter + " students have been added.");
+            if (verifyName(allWords[i])) {
+                surnameBuilder.append(allWords[i]).append(" ");
+            } else {
+                this.correctEntry = false;
+                System.out.println("Incorrect last name.");
                 return;
             }
-            String[] studentInfo = input.trim().split("\\s+");
-            email_matcher = emailPattern.matcher(studentInfo[studentInfo.length - 1]);
-
-
-            if (studentInfo.length > 2) { //checking for firstName, lastName and email (at least 3 words)
-                if (email_matcher.find()) {
-                    tempStudent.email = studentInfo[studentInfo.length - 1];
-                } else {
-                    System.out.println("Incorrect email.");
-                    continue;
-                }
-
-                if (isFirstValidName(studentInfo[0])) {
-                    tempStudent.firstName = studentInfo[0];
-                } else {
-                    System.out.println("Incorrect first name.");
-                    continue;
-                }
-                String[] lastName = Arrays.copyOfRange(studentInfo, 1, studentInfo.length);
-                if (isValidLastName(lastName)) {
-                    tempStudent.lastName = input.substring((studentInfo[0].length() + 1), (input.length() - studentInfo[studentInfo.length - 1].length() + 1));
-                } else {
-                    System.out.println("Incorrect last name.");
-                    continue;
-                }
-                System.out.println("The student has been added.");
-                studentList.add(tempStudent);
-                totalCounter++;
-            } else {
-                System.out.println("Incorrect credentials");
-            }
+            this.surname = surnameBuilder.toString().trim();
+        }
+        if (!verifyEmail(allWords[allWords.length-1])) {
+            this.correctEntry = false;
+            System.out.println("Incorrect email.");
+        } else {
+            this.email = allWords[allWords.length-1];
         }
     }
 
-    private static boolean isFirstValidName(String name) {
-        return name.matches("[A-Za-z]+([ '-][A-Za-z]+)*") && name.length() >= 2;
+    @Override
+    public String toString() {
+        return String.valueOf(this.ID);
     }
 
-    private static boolean isValidLastName(String[] lastname) {
-        boolean result = true;
-        for (int i = 0; i < lastname.length - 1; i++) {
-            if (isFirstValidName(lastname[i])) {
-                continue;
-            } else {
-                return false;
-            }
-        }
-        return result;
+    private boolean verifyName(String name) {
+        return name.matches("[A-Za-z][A-Za-z-']*[A-Za-z]") && notContainsConsecutive(name);
+    }
+
+    private boolean verifyEmail(String name) {
+        return name.matches("[A-Za-z0-9_.-]+@[A-Za-z0-9_.-]+\\.[A-Za-z0-9_.-]+");
+    }
+
+    private boolean notContainsConsecutive(String name) {
+        Pattern pattern = Pattern.compile("(''|--|'-|-')");
+        Matcher matcher = pattern.matcher(name);
+        return !matcher.find();
+    }
+
+    public void notifyComplete(String courseName) {
+        System.out.println("To: " + this.email);
+        System.out.println("Re: Your Learning Progress");
+        System.out.println("Hello, " + this.name + " " + this.surname + "! You have accomplished our " + courseName + " course!");
     }
 }
